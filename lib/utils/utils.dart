@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// aasdasd
 class Util {
   static Widget wrapTap(Widget child, void Function() callback) {
     return GestureDetector(
