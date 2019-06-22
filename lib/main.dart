@@ -2,7 +2,7 @@ import 'package:dororo_news/route/router.dart';
 import 'package:flutter/cupertino.dart';
 
 void main() => runApp(DororoNews());
-/// good
+
 class DororoNews extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
