@@ -21,7 +21,7 @@ class _DororoRouterState extends State<DororoRouter>
   List<Widget> _pages = [HomePage(), FindPage(), ArticlePage(), MePage()];
 
   final _defaultColor = CupertinoColors.black;
-  final _activeColor = CupertinoColors.activeGreen;
+  final _activeColor = CupertinoColors.black;
   int _currentIndex = 0;
   bool flag = true;
 
@@ -68,14 +68,14 @@ class _DororoRouterState extends State<DororoRouter>
         currentIndex: _currentIndex,
         onTap: handleTabChange,
         items: [
-          _renderNavigationBar(AntDesign.home, _defaultColor, AntDesign.home,
+          _renderNavigationBar(CupertinoIcons.home, _defaultColor, Ionicons.ios_home,
               _activeColor, '首页', 0),
-          _renderNavigationBar(AntDesign.profile, _defaultColor,
-              AntDesign.profile, _activeColor, '文章', 1),
-          _renderNavigationBar(Entypo.compass, _defaultColor, Entypo.compass,
+          _renderNavigationBar(CupertinoIcons.news, _defaultColor,
+              CupertinoIcons.news_solid, _activeColor, '文章', 1),
+          _renderNavigationBar(CupertinoIcons.heart, _defaultColor, CupertinoIcons.heart_solid,
               _activeColor, '发现', 2),
           _renderNavigationBar(
-              Feather.user, _defaultColor, Feather.user, _activeColor, '我的', 3),
+              CupertinoIcons.person, _defaultColor, CupertinoIcons.person_solid, _activeColor, '我的', 3),
         ],
       ),
       tabBuilder: (context, i) {
