@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.only(top: 5, bottom: 5),
                   child: Icon(
-                    CupertinoIcons.paw,
+                    CupertinoIcons.pencil,
                     color: CupertinoColors.black,
                   ),
                 ),
@@ -177,12 +177,12 @@ class _HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.only(top: 5, bottom: 5),
                   child: Icon(
-                    CupertinoIcons.pencil,
+                    CupertinoIcons.photo_camera,
                     color: CupertinoColors.black,
                   ),
                 ),
                 Text(
-                  '热门文章',
+                  '设计专栏',
                   style: TextStyle(
                     fontSize: 12,
                   ),
