@@ -10,7 +10,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   List<String> bannerList = [
     'http://www.qidianlife.com/Singular/Public/Uploads/2016-09-13/57d8000c916ed.jpg',
     'http://www.qidianlife.com/Singular/Public/Uploads/2019-03-30/5c9eec385777c.png',
@@ -25,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      backgroundColor: CupertinoColors.extraLightBackgroundGray,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           "多多罗新闻",
@@ -67,6 +69,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // 页面包在listView里面
   Widget get renderPageView {
     return ListView(
       shrinkWrap: true,
@@ -74,6 +77,7 @@ class _HomePageState extends State<HomePage> {
         renderBanner,
         renderTopNav,
         renderDuoDuoNewsHot,
+        renderTabContent,
       ],
     );
   }
@@ -81,8 +85,9 @@ class _HomePageState extends State<HomePage> {
   // 轮播图
   Widget get renderBanner {
     return Container(
+      decoration: BoxDecoration(color: CupertinoColors.white),
       height: 180,
-      margin: EdgeInsets.only(top: 8, bottom: 8),
+      padding: EdgeInsets.only(top: 8),
       child: Swiper(
         pagination: SwiperPagination(
           alignment: Alignment.center,
@@ -122,12 +127,13 @@ class _HomePageState extends State<HomePage> {
     return Container(
       padding: EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
+          color: CupertinoColors.white,
           border: Border(
-        bottom: BorderSide(
-            width: 0.5,
-            style: BorderStyle.solid,
-            color: CupertinoColors.lightBackgroundGray),
-      )),
+            bottom: BorderSide(
+                width: 0.5,
+                style: BorderStyle.solid,
+                color: CupertinoColors.lightBackgroundGray),
+          )),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -198,16 +204,16 @@ class _HomePageState extends State<HomePage> {
   // 热点新闻
   Widget get renderDuoDuoNewsHot {
     return Container(
-      padding: EdgeInsets.all(15.0),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(color: CupertinoColors.white),
       child: Row(
         children: <Widget>[
           Text(
             "多多头条",
             style: TextStyle(
               fontFamily: 'zzgf',
-              letterSpacing: 0.5,
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
           Padding(
@@ -222,11 +228,11 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(
                         fontSize: 14,
                         color: CupertinoColors.darkBackgroundGray)),
-                Text("[新闻] 多多罗新闻App上线啦!",
+                Text("[新闻] 《多多罗新闻》App上线啦!",
                     style: TextStyle(
                         fontSize: 14,
                         color: CupertinoColors.darkBackgroundGray)),
-                Text("[新闻] 多多罗新闻小程序上线啦！",
+                Text("[新闻] 《多多罗新闻小程序》上线啦！",
                     style: TextStyle(
                         fontSize: 14,
                         color: CupertinoColors.darkBackgroundGray)),
@@ -237,6 +243,15 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  // tab区域
+  Widget get renderTabContent {
+    return Container(
+      margin: EdgeInsets.only(top: 5),
+      decoration: BoxDecoration(color: CupertinoColors.white),
+      child: Text('goo')
     );
   }
 }
