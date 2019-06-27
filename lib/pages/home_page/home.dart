@@ -1,3 +1,4 @@
+import 'package:dororo_news/components/dororo_tab_card/dororo_tab_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
@@ -21,6 +22,14 @@ class _HomePageState extends State<HomePage>
     'http://www.qidianlife.com/Singular/Public/Uploads/2017-07-02/59589fd7a9af1.png',
     'http://www.qidianlife.com/Singular/Public/Uploads/2016-09-13/57d8000c916ed.jpg',
     'http://www.qidianlife.com/Singular/Public/Uploads/2019-03-30/5c9eec385777c.png'
+  ];
+
+  final List<String> myTabs = [
+    '最新2', //listType是参数值
+    '附近',
+    '推荐',
+    '鉴定',
+    '实体认证',
   ];
 
   @override
@@ -248,10 +257,25 @@ class _HomePageState extends State<HomePage>
 
   // tab区域
   Widget get renderTabContent {
+    return DororoPageView(data: null);
+  }
+}
+
+class Page1 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    print('page1');
     return Container(
-      margin: EdgeInsets.only(top: 5),
-      decoration: BoxDecoration(color: CupertinoColors.white),
-      child: Text('goo')
+      child: Text('Page1')
+    );
+  }
+}
+
+class Page2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Text('Page2')
     );
   }
 }
