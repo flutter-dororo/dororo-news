@@ -246,7 +246,9 @@ class _HomePageState extends State<HomePage>
                         fontSize: 14,
                         color: CupertinoColors.darkBackgroundGray)),
               ],
-              onChange: (i) {},
+              onChange: (i) {
+                print(i);
+              },
               duration: 5,
             ),
           ),

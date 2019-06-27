@@ -86,31 +86,30 @@ class DororoPageView extends StatelessWidget {
   /// ][默认: PageViewIndicatorAnimStyle.NORMAL]
   final PageViewIndicatorAnimStyle indicatorAnimStyle;
 
-  DororoPageView(
-      {@required this.data,
-      this.customViewPageItemWidget,
-      this.autoScrollDurationSeconds: 5,
-      this.onPageTap,
-      this.height: 150,
-      this.pageViewScrollDirection: Axis.horizontal,
-      this.pageViewMargin: const EdgeInsets.all(10),
-      this.pageViewBorderRadius: const BorderRadius.all(Radius.circular(10)),
-      this.pageViewDefaultBGColor: CupertinoColors.darkBackgroundGray,
-      this.pageViewIndicatorAlignment: Alignment.center,
-      this.pageViewIndicatorIsOutside: false,
-      this.pageViewIndicatorPadding:
-          const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-      this.pageViewItemTextColor: CupertinoColors.white,
-      this.pageViewItemBGColor: CupertinoColors.black,
-      this.indicatorPositioned: const Positioned(top: 10.0),
-      this.indicatorScrollDirection: Axis.horizontal,
-      this.indicatorNormalColor: CupertinoColors.white,
-      this.indicatorActiveColor: CupertinoColors.activeBlue,
-      this.indicatorNormalSize: 8.0,
-      this.indicatorScaleSize: 1.4,
-      this.indicatorSpacing: 4.0,
-      this.indicatorStyle: PageViewIndicatorStyle.CIRCLE,
-      this.indicatorAnimStyle: PageViewIndicatorAnimStyle.NORMAL});
+  DororoPageView({@required this.data,
+    this.customViewPageItemWidget,
+    this.autoScrollDurationSeconds: 5,
+    this.onPageTap,
+    this.height: 150,
+    this.pageViewScrollDirection: Axis.horizontal,
+    this.pageViewMargin: const EdgeInsets.all(10),
+    this.pageViewBorderRadius: const BorderRadius.all(Radius.circular(10)),
+    this.pageViewDefaultBGColor: CupertinoColors.darkBackgroundGray,
+    this.pageViewIndicatorAlignment: Alignment.center,
+    this.pageViewIndicatorIsOutside: false,
+    this.pageViewIndicatorPadding:
+    const EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
+    this.pageViewItemTextColor: CupertinoColors.white,
+    this.pageViewItemBGColor: CupertinoColors.black,
+    this.indicatorPositioned: const Positioned(child: null, top: 10.0,),
+    this.indicatorScrollDirection: Axis.horizontal,
+    this.indicatorNormalColor: CupertinoColors.white,
+    this.indicatorActiveColor: CupertinoColors.activeBlue,
+    this.indicatorNormalSize: 8.0,
+    this.indicatorScaleSize: 1.4,
+    this.indicatorSpacing: 4.0,
+    this.indicatorStyle: PageViewIndicatorStyle.CIRCLE,
+    this.indicatorAnimStyle: PageViewIndicatorAnimStyle.NORMAL});
 
   /// 轮播控制器
   Timer _timer;
@@ -130,29 +129,73 @@ class DororoPageView extends StatelessWidget {
     }
 
     _timer = Timer.periodic(Duration(seconds: autoScrollDurationSeconds),
-        (Timer timer) {
-      if (_pageController.page != null) {
-        var nextPageIndex = _pageController.page.toInt() + 1;
-        _toPage(nextPageIndex);
-      }
-    });
+            (Timer timer) {
+          if (_pageController.page != null) {
+            var nextPageIndex = _pageController.page.toInt() + 1;
+            // _toPage(nextPageIndex);
+          }
+        });
   }
 
   /// 跳转到pageView
-  void _toPage(int pageIndex) {
+  void _toPage(int page) {
     _pageController.animateToPage(page,
         duration: Duration(microseconds: 300), curve: Curves.ease);
   }
 
+  /// 生成pageViewItem样式
+  Widget _createPageViewItem(BuildContext context, int i) {
+    return Container(
+      margin: pageViewMargin,
+      child: GestureDetector(
+          onTap: () {
+            print('我被点击了');
+          },
+        child: Text('xxxxxxxxx'),
+      ),
+    );
+  }
 
   ///
 
 
   @override
   Widget build(BuildContext context) {
-    _resetTimer();
-    return Container(
-      child: Text('111'),
-    );
+//    _resetTimer();
+    return _createDororPageView();
   }
+
+  /// 生成pageView
+  Widget _createDororPageView() {
+    print('$pageViewIndicatorIsOutside');
+
+    if(pageViewIndicatorIsOutside == false) {
+      /// 在内部
+      return SizedBox(
+        height: height,
+        child: Container(
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: <Widget>[
+              PageView.builder(
+                  scrollDirection: pageViewScrollDirection,
+                  controller: _pageController,
+                  itemBuilder: (context, index) {
+//                    var i = index % _getReallyPageViewSize();
+                    return _createPageViewItem(context, 2);
+                  }
+              )
+            ],
+          ),
+        ),
+      );
+
+
+    } else {
+      /// 如果在外部的话需要定位到外面
+      return Text('我在外部');
+    }
+  }
+
+
 }
