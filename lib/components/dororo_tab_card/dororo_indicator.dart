@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 
 enum PageViewIndicatorStyle {
@@ -29,7 +31,8 @@ class DororoIndicator extends AnimatedWidget {
     this.scaleSize: 1.4,
     this.style: PageViewIndicatorStyle.CIRCLE,
     this.animStyle: PageViewIndicatorAnimStyle.NORMAL,
-  })  : assert(controller != null),
+  })
+      : assert(controller != null),
         super(listenable: controller);
 
   /// pageView controller [pageView控制器]
@@ -76,16 +79,87 @@ class DororoIndicator extends AnimatedWidget {
       double size, double spacing, PageViewIndicatorAnimStyle animStyle) {
     switch (scrollDirection) {
       case Axis.horizontal:
-        return Container(
-          child: Text('中间'),
-        );
+        return _createDororoHorizontalIndicator(
+            scrollDirection, itemCount, size, spacing,
+            animStyle == PageViewIndicatorAnimStyle.SCALED ? scaleSize : 1.0);
       case Axis.vertical:
-        return Container(
-          child: Text('saa'),
-        );
+        return _createDororoVerticalIndicator(
+            scrollDirection, itemCount, size, spacing,
+            animStyle == PageViewIndicatorAnimStyle.SCALED ? scaleSize : 1.0);
 
       default:
         throw new Exception("Not a valid Axis");
     }
+  }
+
+
+  /// 生成水平的指示器
+  Widget _createDororoHorizontalIndicator(Axis scrollDirection, int itemCount,
+      double size, double spacing, double d) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: List.generate(itemCount, (int index) {
+        return _createDororoIndicatorItem(index, itemCount, size, spacing, d);
+      })
+      ,
+    );
+  }
+
+  /// 生成垂直的指示器
+  Widget _createDororoVerticalIndicator(Axis scrollDirection, int itemCount,
+      double size, double spacing, double d) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: List.generate(itemCount, (int index) {
+        return _createDororoIndicatorItem(index, itemCount, size, spacing, d);
+      })
+      ,
+    );
+  }
+
+  /// 生成每一个指示器
+  Widget _createDororoIndicatorItem(int index, int pageCount, double size,
+      double spacing, double maxZoom) {
+    ///
+    double currentPostion = ((controller.page ??
+        controller.initialPage.toDouble()) % pageCount.toDouble());
+
+    double selectedness = Curves.easeOut.transform(
+      max(
+        0.0,
+        1.0 - (currentPostion - index).abs(),
+      ),
+    );
+
+
+    bool isCurrentPageSelected = index ==
+        (controller.page != null ? controller.page.round() % pageCount : 0);
+
+    if (currentPostion > pageCount - 1 && index == 0) {
+      selectedness = 1 - (pageCount.toDouble() - currentPostion);
+    }
+
+//    double zoom = 1.0 + (maxZoom - 1.0) * selectdness;
+
+    final ColorTween selectedColorTween =
+    ColorTween(begin: normalColor, end: activeColor);
+
+
+    return GestureDetector(
+      onTap: () => onPageSelected(index),
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: selectedColorTween.lerp(selectedness),
+              )
+            ]
+        ),
+        child: Text(
+          '$index', style: TextStyle(color: isCurrentPageSelected ? CupertinoColors.white : CupertinoColors.black),),
+      ),
+    );
   }
 }

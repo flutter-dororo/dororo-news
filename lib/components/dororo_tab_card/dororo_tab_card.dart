@@ -1,6 +1,7 @@
 import 'package:dororo_news/components/dororo_tab_card/dororo_indicator.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:async';
+//import 'dart:async';
+import 'package:flutter/rendering.dart';
 
 /// * 自定义实现一个pageView *
 ///
@@ -92,7 +93,7 @@ class DororoPageView extends StatelessWidget {
     this.onPageTap,
     this.height: 150,
     this.pageViewScrollDirection: Axis.horizontal,
-    this.pageViewMargin: const EdgeInsets.all(10),
+    this.pageViewMargin: const EdgeInsets.all(5),
     this.pageViewBorderRadius: const BorderRadius.all(Radius.circular(10)),
     this.pageViewDefaultBGColor: CupertinoColors.darkBackgroundGray,
     this.pageViewIndicatorAlignment: Alignment.center,
@@ -112,30 +113,31 @@ class DororoPageView extends StatelessWidget {
     this.indicatorAnimStyle: PageViewIndicatorAnimStyle.NORMAL});
 
   /// 轮播控制器
-  Timer _timer;
+//  Timer _timer;
 
   /// 控制器
-  final PageController _pageController = PageController(initialPage: 200);
+  final PageController _pageController = PageController(initialPage: 0);
 
   /// 获取数据的真实长度
-  int _getReallyPageViewSize() {
-    return data != null ? data.length : 0;
-  }
+//  int _getReallyPageViewSize() {
+//    return data != null ? data.length : 0;
+
+//  }
 
   /// 触摸的时候,将轮播控制器状态清空
-  _resetTimer() {
-    if (_timer != null) {
-      _timer.cancel();
-    }
-
-    _timer = Timer.periodic(Duration(seconds: autoScrollDurationSeconds),
-            (Timer timer) {
-          if (_pageController.page != null) {
-            var nextPageIndex = _pageController.page.toInt() + 1;
-            // _toPage(nextPageIndex);
-          }
-        });
-  }
+//  _resetTimer() {
+//    if (_timer != null) {
+//      _timer.cancel();
+//    }
+//
+//    _timer = Timer.periodic(Duration(seconds: autoScrollDurationSeconds),
+//            (Timer timer) {
+//          if (_pageController.page != null) {
+//            var nextPageIndex = _pageController.page.toInt() + 1;
+//            // _toPage(nextPageIndex);
+//          }
+//        });
+//  }
 
   /// 跳转到pageView
   void _toPage(int page) {
@@ -148,10 +150,16 @@ class DororoPageView extends StatelessWidget {
     return Container(
       margin: pageViewMargin,
       child: GestureDetector(
-          onTap: () {
-            print('我被点击了');
-          },
-        child: Text('xxxxxxxxx'),
+        onTap: () {
+          print('我被点击了');
+        },
+        child: Container(
+          margin: pageViewMargin,
+          child: ClipRRect(
+            borderRadius: pageViewBorderRadius,
+            child: _createDefaultPageViewItem(i),
+          ),
+        ),
       ),
     );
   }
@@ -162,6 +170,7 @@ class DororoPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 //    _resetTimer();
+//    debugPaintSizeEnabled = true;
     return _createDororPageView();
   }
 
@@ -169,8 +178,49 @@ class DororoPageView extends StatelessWidget {
   Widget _createDororPageView() {
     print('$pageViewIndicatorIsOutside');
 
-    if(pageViewIndicatorIsOutside == false) {
-      /// 在内部
+    /// 指示器在内部
+    if (pageViewIndicatorIsOutside == false) {
+      return SizedBox(
+        height: height,
+        child: Container(
+          child: Stack(
+            children: <Widget>[
+              PageView.builder(
+                  scrollDirection: pageViewScrollDirection,
+                  controller: _pageController,
+                  itemCount: 2,
+                  itemBuilder: (context, index) {
+//                    var i = index % _getReallyPageViewSize();
+                    return _createPageViewItem(context, index);
+                  }
+              ),
+              Positioned(
+                top: indicatorPositioned.top,
+                right: indicatorPositioned.right,
+                bottom: indicatorPositioned.bottom,
+                left: indicatorPositioned.left,
+                child: DororoIndicator(
+                  controller: _pageController,
+                  itemCount: 2,
+                  size: indicatorNormalSize,
+                  scaleSize: indicatorScaleSize,
+                  scrollDirection: indicatorScrollDirection,
+                  normalColor: indicatorNormalColor,
+                  activeColor: indicatorActiveColor,
+                  spacing: indicatorSpacing,
+                  animStyle: indicatorAnimStyle,
+                  style: indicatorStyle,
+                  onPageSelected: (int page) {
+                    _toPage(page);
+                  },
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    } else {
+      /// 指示器在外部
       return SizedBox(
         height: height,
         child: Container(
@@ -182,19 +232,29 @@ class DororoPageView extends StatelessWidget {
                   controller: _pageController,
                   itemBuilder: (context, index) {
 //                    var i = index % _getReallyPageViewSize();
-                    return _createPageViewItem(context, 2);
+                    return _createPageViewItem(context, index);
                   }
-              )
+              ),
             ],
           ),
         ),
       );
-
-
-    } else {
-      /// 如果在外部的话需要定位到外面
-      return Text('我在外部');
     }
+  }
+
+  Widget _createDefaultPageViewItem(int i) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          height: double.infinity,
+          width: double.infinity,
+          alignment: Alignment.center,
+          color: pageViewItemBGColor,
+          child: Text('我是默认生成的pageView $i',
+            style: TextStyle(color: CupertinoColors.white),),
+        ),
+      ],
+    );
   }
 
 
