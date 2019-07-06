@@ -1,10 +1,12 @@
-import 'package:dororo_news/components/dororo_tab_card/dororo_tab_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+//import 'package:flustars/flustars.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:flutter_marquee/flutter_marquee.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -25,15 +27,24 @@ class _HomePageState extends State<HomePage>
   ];
 
   final List<String> myTabs = [
-    '最新2', //listType是参数值
-    '附近',
-    '推荐',
-    '鉴定',
-    '实体认证',
+    '最新', //listType是参数值
+    'Web前端',
+    'Java',
+    '产品经理',
   ];
+
+  TabController tabController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    tabController = TabController(length: myTabs.length, vsync: this);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true)..init(context);
     return CupertinoPageScaffold(
       backgroundColor: CupertinoColors.extraLightBackgroundGray,
       navigationBar: CupertinoNavigationBar(
@@ -71,8 +82,17 @@ class _HomePageState extends State<HomePage>
       child: SafeArea(
         left: false,
         right: false,
-        child: Container(
-          child: renderPageView,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            body: MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: Container(
+                child: renderPageView,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -86,7 +106,8 @@ class _HomePageState extends State<HomePage>
         renderBanner,
         renderTopNav,
         renderDuoDuoNewsHot,
-        renderTabContent,
+        renderTabCard,
+        renderTabView,
       ],
     );
   }
@@ -100,7 +121,7 @@ class _HomePageState extends State<HomePage>
       child: Swiper(
         pagination: SwiperPagination(
           alignment: Alignment.center,
-          margin: EdgeInsets.only(top: 140),
+          margin: EdgeInsets.only(top: 130),
           builder: DotSwiperPaginationBuilder(
             size: 6,
             space: 6,
@@ -257,27 +278,127 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // tab区域
-  Widget get renderTabContent {
-    return DororoPageView(data: null);
+  // tab选项卡
+  Widget get renderTabCard {
+    double width = ScreenUtil.screenWidthDp;
+    print(width);
+    return Container(
+        margin: EdgeInsets.only(top: 5),
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            TabBar(
+              controller: tabController,
+              isScrollable: true,
+              labelColor: Colors.black,
+              labelPadding: EdgeInsets.all(5),
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                    color: CupertinoColors.black, width: 1.5),
+                insets: EdgeInsets.only(bottom: 10, right: ScreenUtil.getInstance().setWidth(38), left: ScreenUtil.getInstance().setWidth(38)),
+              ),
+              tabs: myTabs.map((tab) {
+                return Container(
+                  width: (width - 70) / myTabs.length,
+                  child: Tab(text: tab,),
+                );
+              }).toList(),
+            ),
+            Spacer(flex: 2,),
+            Container(
+              child: Icon(
+                  Entypo.chevron_small_down
+              ),
+            )
+          ],
+        )
+    );
+  }
+
+  // tabView
+  Widget get renderTabView {
+    return Container(
+      height: 600,
+      child: TabBarView(
+        controller: tabController,
+        children: _renderTabViewList(),
+      ),
+    );
+  }
+
+  // tabView
+  List<Widget> _renderTabViewList() {
+    return myTabs.map((tab) {
+      return GridView.count(
+        crossAxisCount: 2,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
+        childAspectRatio: 10 / 8,
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.all(10),
+        children: _buildTabViewChildItems(myTabs.length, myTabs),
+      );
+    }).toList();
+  }
+
+  _buildTabViewChildItems(int length, List<String> myTabs) {
+    return List.generate(length, (idx) {
+      return Column(
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Container(
+                height: 100,
+                color: Colors.grey[300],
+                child: FadeInImage.assetNetwork(
+                  image: bannerList[idx],
+                  placeholder: 'assets/images/loading_logo.png',
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Color.fromRGBO(0, 0, 0, 0.2),
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(width: 5,),
+                      Icon(SimpleLineIcons.eye, color: Colors.white, size: 12,),
+                      SizedBox(width: 5,),
+                      Text('99999',
+                        style: TextStyle(color: Colors.white, fontSize: 12),)
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(top: 5),
+            child: Text(
+              '${myTabs[idx]} - 标题 $idx 中文标题太长了, 中文标题太长了, 中文标题太长了, 中文标题太长了',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              softWrap: true,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: CupertinoColors.black,
+                fontSize: 12.0,
+              ),
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
-class Page1 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    print('page1');
-    return Container(
-      child: Text('Page1')
-    );
-  }
-}
 
-class Page2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Text('Page2')
-    );
-  }
-}

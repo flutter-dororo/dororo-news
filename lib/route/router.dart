@@ -18,7 +18,7 @@ class DororoRouter extends StatefulWidget {
 
 class _DororoRouterState extends State<DororoRouter>
     with TickerProviderStateMixin {
-  List<Widget> _pages = [HomePage(), FindPage(), ArticlePage(), MePage()];
+  List<Widget> _pages = [HomePage(), ArticlePage(), FindPage(),  MePage()];
 
   final _defaultColor = CupertinoColors.black;
   final _activeColor = CupertinoColors.black;
