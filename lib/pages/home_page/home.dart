@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage>
       child: SafeArea(
         left: false,
         right: false,
+        bottom: false,
         child: MaterialApp(
           theme: ThemeData(
             backgroundColor: ThemeColors,
@@ -129,6 +130,8 @@ class _HomePageState extends State<HomePage>
         renderTabCard,
         renderTabView,
         renderInformation,
+        renderPopular(),
+        renderContact(),
       ],
     );
   }
@@ -548,6 +551,184 @@ class _HomePageState extends State<HomePage>
                 color: CupertinoColors.black,
                 fontSize: 12.0,
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //
+  Widget renderPopular() {
+    return Container(
+      margin: EdgeInsets.only(top: 10,),
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          DororoTitle(
+            title: '热门推荐',
+            hasRoute: true,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10, right: 10),
+            child: Column(
+              children: _renderPopularList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //
+  List<Widget> _renderPopularList() {
+    final Random random = Random.secure();
+    return bannerList
+        .asMap()
+        .keys
+        .map((int index) {
+      return Container(
+        padding: EdgeInsets.only(bottom: 10, top: 10),
+        decoration: BoxDecoration(
+          color: CupertinoColors.white,
+          border: Border(
+            bottom: BorderSide(
+                width: 0.5,
+                style: BorderStyle.solid,
+                color: CupertinoColors.lightBackgroundGray),
+          ),),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: 100,
+              height: 80,
+              child: FadeInImage.assetNetwork(
+                image: bannerList[index],
+                placeholder: 'assets/images/loading_logo.png',
+                fit: BoxFit.fill,
+              ),
+            ),
+            Container(
+              width: ScreenUtil.screenWidthDp / 1.5,
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                children: <Widget>[
+                  Text(index % 2 == 0
+                      ? '知乎高质量用户在流失吗?还有那些高质量用户?些高质量用户?'
+                      : '用Pythone爬网页需要了解什么背景知识?', style: TextStyle(
+                    fontSize: ScreenUtil.getInstance().setSp(24),
+                    fontWeight: FontWeight.bold,
+                  ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Icon(SimpleLineIcons.eye,
+                              color: CupertinoColors.inactiveGray,
+                              size: 14,),
+                            SizedBox(width: 5,),
+                            Text(
+                              random.nextInt(999999).toString(),
+                              style: TextStyle(
+                                  color: CupertinoColors.inactiveGray
+                              ),),
+                          ],
+                        ),
+                        Text(
+                          '# ${index % 2 == 0 ? '其他' : 'Android' }',
+                          style: TextStyle(
+                              color: CupertinoColors.inactiveGray
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }).toList();
+  }
+
+
+  // 联系我们
+  renderContact() {
+    return Container(
+      padding: EdgeInsets.only(top: 15, bottom: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            child: Row(
+              children: <Widget>[
+                Icon(FontAwesome.github, color: CupertinoColors.inactiveGray,
+                  size: ScreenUtil.getInstance().setSp(16),),
+                SizedBox(
+                  width: 5,
+                ),
+                Text('flutter-dororo', style: TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                  fontSize: ScreenUtil.getInstance().setSp(16),
+                ),)
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Row(
+              children: <Widget>[
+                Icon(FontAwesome.wechat, color: CupertinoColors.inactiveGray,
+                  size: ScreenUtil.getInstance().setSp(16),),
+                SizedBox(
+                  width: 5,
+                ),
+                Text('duoduoluo-life', style: TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                  fontSize: ScreenUtil.getInstance().setSp(16),
+                ),)
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Row(
+              children: <Widget>[
+                Icon(FontAwesome.qq, color: CupertinoColors.inactiveGray,
+                  size: ScreenUtil.getInstance().setSp(16),),
+                SizedBox(
+                  width: 5,
+                ),
+                Text('1044032256(群)', style: TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                  fontSize: ScreenUtil.getInstance().setSp(16),
+                ),)
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Row(
+              children: <Widget>[
+                Icon(FontAwesome.weibo, color: CupertinoColors.inactiveGray,
+                  size: ScreenUtil.getInstance().setSp(16),),
+                SizedBox(
+                  width: 5,
+                ),
+                Text('多多罗新闻 - 新闻资讯美滋滋', style: TextStyle(
+                  color: CupertinoColors.inactiveGray,
+                  fontSize: ScreenUtil.getInstance().setSp(16),
+                ),)
+              ],
             ),
           ),
         ],
