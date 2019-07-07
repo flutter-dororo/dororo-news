@@ -48,13 +48,38 @@ class _HomePageState extends State<HomePage>
   ];
 
   TabController tabController;
+  PageController mPageController = PageController(initialPage: 0);
   Color ThemeColors = CupertinoColors.extraLightBackgroundGray;
+  var isPageCanChanged = true;
 
   @override
   void initState() {
     // TODO: implement initState
     tabController = TabController(length: myTabs.length, vsync: this);
+    tabController.addListener(() {//TabBar的监听
+      if (tabController.indexIsChanging) {//判断TabBar是否切换
+        onPageChange(tabController.index, p: mPageController);
+      }
+    });
     super.initState();
+  }
+
+  onPageChange(int index, {PageController p, TabController t}) async {
+    if (p != null) {//判断是哪一个切换
+      isPageCanChanged = false;
+      await mPageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);//等待pageview切换完毕,再释放pageivew监听
+      isPageCanChanged = true;
+    } else {
+      tabController.animateTo(index);//切换Tabbar
+    }
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
+    mPageController.dispose();
   }
 
   @override
@@ -350,9 +375,25 @@ class _HomePageState extends State<HomePage>
         children: <Widget>[
           Container(
             height: ScreenUtil.getInstance().setWidth(880),
-            child: TabBarView(
-              controller: tabController,
-              children: _renderTabViewList(),
+            child: PageView.builder(
+              onPageChanged: (index) {
+                if (isPageCanChanged) {//由于pageview切换是会回调这个方法,又会触发切换tabbar的操作,所以定义一个flag,控制pageview的回调
+                  onPageChange(index);
+                }
+              },
+              itemCount: myTabs.length,
+              controller: mPageController,
+              itemBuilder: (BuildContext context, int index) {
+                return GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                  childAspectRatio: 10 / 8,
+                  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.all(10),
+                  children: _buildTabViewChildItems(gridItems.length, myTabs),
+                );
+              },
             ),
           ),
           Container(
@@ -362,9 +403,9 @@ class _HomePageState extends State<HomePage>
               borderRadius: BorderRadius.circular(30),
             ),
             padding: EdgeInsets.fromLTRB(ScreenUtil.getInstance().setWidth(20),
-                ScreenUtil.getInstance().setWidth(5),
+                ScreenUtil.getInstance().setWidth(10),
                 ScreenUtil.getInstance().setWidth(20),
-                ScreenUtil.getInstance().setWidth(5)),
+                ScreenUtil.getInstance().setWidth(10)),
             child: Util.wrapTap(
                 Text('更多', style: TextStyle(
                   color: CupertinoColors.darkBackgroundGray,
@@ -378,22 +419,6 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  // tabView
-  List<Widget> _renderTabViewList() {
-    List<Widget> tabViewList = [];
-    tabViewList = myTabs.map((tab) {
-      return GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 5,
-        childAspectRatio: 10 / 8,
-        physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.all(10),
-        children: _buildTabViewChildItems(gridItems.length, myTabs),
-      );
-    }).toList();
-    return tabViewList;
-  }
 
   // tabViewItem
   _buildTabViewChildItems(int len, List<String> myTabs) {
