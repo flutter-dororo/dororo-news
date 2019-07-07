@@ -30,6 +30,7 @@ dependencies:
   flustars: ^0.2.6+1
   common_utils: ^1.1.1
   flutter_screenutil: ^0.5.3
+  extended_image: ^0.5.1
   flutter_marquee:
     git: https://github.com/LiuC520/flutter_marquee.git
 
