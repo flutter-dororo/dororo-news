@@ -30,6 +30,7 @@ dependencies:
   flustars: ^0.2.6+1
   common_utils: ^1.1.1
   flutter_screenutil: ^0.5.3
+  extended_image: ^0.5.1
   flutter_marquee:
     git: https://github.com/LiuC520/flutter_marquee.git
 
@@ -53,6 +54,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - assets/images/loading_logo.png
+   - assets/images/article_defalut_item.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,5 +1,10 @@
+import 'dart:math';
+
+import 'package:dororo_news/components/title/index.dart';
+import 'package:dororo_news/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+
 //import 'package:flustars/flustars.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
@@ -26,6 +31,15 @@ class _HomePageState extends State<HomePage>
     'http://www.qidianlife.com/Singular/Public/Uploads/2019-03-30/5c9eec385777c.png'
   ];
 
+  List<String> gridItems = [
+    '第一个',
+    '第二个',
+    '都三个',
+    '第四个',
+    '第五个',
+    '第六个',
+  ];
+
   final List<String> myTabs = [
     '最新', //listType是参数值
     'Web前端',
@@ -34,6 +48,7 @@ class _HomePageState extends State<HomePage>
   ];
 
   TabController tabController;
+  Color ThemeColors = CupertinoColors.extraLightBackgroundGray;
 
   @override
   void initState() {
@@ -44,9 +59,11 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true)..init(context);
+    ScreenUtil.instance =
+    ScreenUtil(width: 750, height: 1334, allowFontScaling: true)
+      ..init(context);
     return CupertinoPageScaffold(
-      backgroundColor: CupertinoColors.extraLightBackgroundGray,
+      backgroundColor: ThemeColors,
       navigationBar: CupertinoNavigationBar(
         middle: Text(
           "多多罗新闻",
@@ -83,6 +100,9 @@ class _HomePageState extends State<HomePage>
         left: false,
         right: false,
         child: MaterialApp(
+          theme: ThemeData(
+            backgroundColor: ThemeColors,
+          ),
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             body: MediaQuery.removePadding(
@@ -108,6 +128,7 @@ class _HomePageState extends State<HomePage>
         renderDuoDuoNewsHot,
         renderTabCard,
         renderTabView,
+        renderInformation,
       ],
     );
   }
@@ -281,9 +302,8 @@ class _HomePageState extends State<HomePage>
   // tab选项卡
   Widget get renderTabCard {
     double width = ScreenUtil.screenWidthDp;
-    print(width);
     return Container(
-        margin: EdgeInsets.only(top: 5),
+        margin: EdgeInsets.only(top: 5, right: 5),
         color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -296,7 +316,9 @@ class _HomePageState extends State<HomePage>
               indicator: UnderlineTabIndicator(
                 borderSide: BorderSide(
                     color: CupertinoColors.black, width: 1.5),
-                insets: EdgeInsets.only(bottom: 10, right: ScreenUtil.getInstance().setWidth(38), left: ScreenUtil.getInstance().setWidth(38)),
+                insets: EdgeInsets.only(bottom: 10,
+                    right: ScreenUtil.getInstance().setWidth(38),
+                    left: ScreenUtil.getInstance().setWidth(38)),
               ),
               tabs: myTabs.map((tab) {
                 return Container(
@@ -319,17 +341,44 @@ class _HomePageState extends State<HomePage>
   // tabView - 1
   Widget get renderTabView {
     return Container(
-      height: 600,
-      child: TabBarView(
-        controller: tabController,
-        children: _renderTabViewList(),
+      padding: EdgeInsets.only(bottom: 5),
+      color: Colors.white,
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: ScreenUtil.getInstance().setWidth(880),
+            child: TabBarView(
+              controller: tabController,
+              children: _renderTabViewList(),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                  width: 1, color: CupertinoColors.extraLightBackgroundGray),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            padding: EdgeInsets.fromLTRB(ScreenUtil.getInstance().setWidth(20),
+                ScreenUtil.getInstance().setWidth(5),
+                ScreenUtil.getInstance().setWidth(20),
+                ScreenUtil.getInstance().setWidth(5)),
+            child: Util.wrapTap(
+                Text('更多', style: TextStyle(
+                  color: CupertinoColors.darkBackgroundGray,
+                  fontSize: ScreenUtil.getInstance().setSp(24.0),
+                ),), () {
+              print('you click the button');
+            }),
+          ),
+        ],
       ),
     );
   }
 
   // tabView
   List<Widget> _renderTabViewList() {
-    return myTabs.map((tab) {
+    List<Widget> tabViewList = [];
+    tabViewList = myTabs.map((tab) {
       return GridView.count(
         crossAxisCount: 2,
         crossAxisSpacing: 5,
@@ -337,13 +386,16 @@ class _HomePageState extends State<HomePage>
         childAspectRatio: 10 / 8,
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.all(10),
-        children: _buildTabViewChildItems(myTabs.length, myTabs),
+        children: _buildTabViewChildItems(gridItems.length, myTabs),
       );
     }).toList();
+    return tabViewList;
   }
 
-  _buildTabViewChildItems(int length, List<String> myTabs) {
-    return List.generate(length, (idx) {
+  // tabViewItem
+  _buildTabViewChildItems(int len, List<String> myTabs) {
+    final Random random = Random.secure();
+    return List.generate(len, (idx) {
       return Column(
         children: <Widget>[
           Stack(
@@ -372,7 +424,7 @@ class _HomePageState extends State<HomePage>
                       SizedBox(width: 5,),
                       Icon(SimpleLineIcons.eye, color: Colors.white, size: 12,),
                       SizedBox(width: 5,),
-                      Text('99999',
+                      Text(random.nextInt(888888).toString(),
                         style: TextStyle(color: Colors.white, fontSize: 12),)
                     ],
                   ),
@@ -384,7 +436,7 @@ class _HomePageState extends State<HomePage>
             alignment: Alignment.centerLeft,
             margin: EdgeInsets.only(top: 5),
             child: Text(
-              '${myTabs[idx]} - 标题 $idx 中文标题太长了, 中文标题太长了, 中文标题太长了, 中文标题太长了',
+              '${gridItems[idx]} - 标题 $idx 中文标题太长了, 中文标题太长了, 中文标题太长了, 中文标题太长了',
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               softWrap: true,
@@ -399,6 +451,111 @@ class _HomePageState extends State<HomePage>
       );
     });
   }
+
+  // 最新资讯
+  Widget get renderInformation {
+    debugPaintSizeEnabled = !true;
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DororoTitle(
+            title: '最新资讯',
+            hasRoute: true,
+          ),
+          _buildInformationList(),
+        ],
+      ),
+    );
+  }
+
+  _buildInformationList() {
+    return Wrap(
+      spacing: 5,
+      runSpacing: 5,
+      alignment: WrapAlignment.center,
+      children: <Widget>[
+        _renderInformationListItem(ScreenUtil.screenWidthDp, 120, bannerList[1],
+            '${gridItems[1]} - 标题 2 中文标题太长了, 中文标题太长了, 中文标题太长了, 中文标题太长了', 5, 5),
+        _renderInformationListItem(
+            ScreenUtil.screenWidthDp / 2 - 10, 120, bannerList[2],
+            '${gridItems[2]} - 标题 2 中文标题太长了, 中文标题太长了, 中文标题太长了, 中文标题太长了'),
+        _renderInformationListItem(
+            ScreenUtil.screenWidthDp / 2 - 10, 120, bannerList[3],
+            '${gridItems[3]} - 标题 2 中文标题太长了, 中文标题太长了, 中文标题太长了, 中文标题太长了'),
+      ],
+    );
+  }
+
+  // 最新资讯item
+  Widget _renderInformationListItem(double width, double height, String url,
+      String title, [double l = 0, double r = 0]) {
+    final Random random = Random.secure();
+    return Container(
+      width: width,
+      margin: EdgeInsets.only(left: l, right: r),
+      child: Column(
+        children: <Widget>[
+          Stack(
+            children: <Widget>[
+              Container(
+                height: height,
+                width: width,
+                child: FadeInImage.assetNetwork(
+                  image: url,
+                  placeholder: 'assets/images/loading_logo.png',
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 5,
+                right: 5,
+                child: Container(
+                  alignment: Alignment.center,
+                  color: Color.fromRGBO(0, 0, 0, 0.2),
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(width: 5,),
+                      Icon(
+                        SimpleLineIcons.eye, color: Colors.white, size: 12,),
+                      SizedBox(width: 5,),
+                      Text(random.nextInt(888888).toString(),
+                        style: TextStyle(color: Colors.white, fontSize: 12),)
+                    ],
+                  ),
+                ),
+              ),
+
+            ],
+          ),
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              softWrap: true,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                color: CupertinoColors.black,
+                fontSize: 12.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
+
 
 
