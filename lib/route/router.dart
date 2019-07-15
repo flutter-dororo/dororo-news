@@ -22,7 +22,7 @@ class _DororoRouterState extends State<DororoRouter>
 
   final _defaultColor = CupertinoColors.black;
   final _activeColor = CupertinoColors.black;
-  int _currentIndex = 0;
+  int _currentIndex = 3;
   bool flag = true;
 
   AnimationController _controller;
